@@ -21,9 +21,7 @@ import csv
 
 
 def make_project_csv_row (project):
-    # Descrptions are not included in output CSV files
-    # They are hard-coded to "..."
-    return [project["Project Title"], f"Table {project['__table_number']}", "..."]
+    return [project["Project Title"], f"Table {project['__table_number']}", project["Submission Url"]]
 
 
 # Read and store tracks
@@ -37,7 +35,8 @@ projects = []
 with open(f"data/{PROJECTS_FILENAME}") as in_file:
     reader = csv.DictReader(in_file)
     for row in reader:
-        projects.append(row)
+        if row["Project Status"] != "Draft":
+            projects.append(row)
 
 # Assign each project a table number
 for num in range(len(projects)):
