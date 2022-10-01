@@ -2,9 +2,64 @@
 # 30 September 2022
 # For HowdyHack 2022
 
+# HOW TO USE
+# ----------
+# 1) Make a folder called "data" in the directory of this script
+# 2) Create a text file inside the data folder containing each Devpost track name separated by line breaks
+#    You can usually copy-paste this from Devpost
+#    Put its filename here
+TRACKS_FILENAME = "tracks-tamuhack-2022.txt"
+# 3) Download the projects CSV from devpost
+#    Put its filename here
+PROJECTS_FILENAME = "projects-tamuhack-2022.csv"
+# 4) Create an empty folder called "output" in the directory of this script 
+# 5) Run the script!
+
+
+
 import csv
 
 
+def make_project_csv_row (project):
+    # Descrptions are not included in output CSV files
+    # They are hard-coded to "..."
+    return [project["Project Title"], f"Table {project['__table_number']}", "..."]
 
 
+# Read and store tracks
+tracks = set()
+with open(f"data/{TRACKS_FILENAME}") as in_file:
+    for line in in_file.readlines():
+        tracks.add(line.strip())
+
+# Read projects CSV file
+projects = []
+with open(f"data/{PROJECTS_FILENAME}") as in_file:
+    reader = csv.DictReader(in_file)
+    for row in reader:
+        projects.append(row)
+
+# Assign each project a table number
+for num in range(len(projects)):
+    projects[num]["__table_number"] = num + 1
+
+# Write output files for each track including arbitrary "all-projects" track
+for track_name in tracks:
+    with open(f"output/{track_name.replace(':', '_')}_gavel.csv", "w") as out_file:
+        writer = csv.writer(out_file)
+        for project in projects:
+            project_tracks = project["Opt-In Prizes"].split(", ")
+            if track_name in project_tracks:
+                row = make_project_csv_row(project)
+                writer.writerow(row)
+
+with open(f"output/all_projects_gavel.csv", "w") as out_file:
+        writer = csv.writer(out_file)
+        for project in projects:
+            row = make_project_csv_row(project)
+            writer.writerow(row)
+
+
+print("Output stuff in \"output\" folder")
+print("All done!")
 
