@@ -11,7 +11,7 @@
 TRACKS_FILENAME = "tracks-tamuhack-2022.txt"
 # 3) Download the projects CSV from devpost
 #    Put its filename here
-PROJECTS_FILENAME = "projects-tamuhack-2022.csv"
+PROJECTS_FILENAME = "projects-howdy-hack-2022.csv"
 # 4) Create an empty folder called "output" in the directory of this script 
 # 5) Run the script!
 
@@ -35,7 +35,8 @@ projects = []
 with open(f"data/{PROJECTS_FILENAME}") as in_file:
     reader = csv.DictReader(in_file)
     for row in reader:
-        if row["Project Status"] != "Draft":
+        # Exclude draft projects and projects hidden by admins
+        if row["Project Status"] != "Draft" and "(Hidden)" not in row["Project Status"]:
             projects.append(row)
 
 # Assign each project a table number
