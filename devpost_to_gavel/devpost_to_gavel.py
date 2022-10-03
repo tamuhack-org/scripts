@@ -59,7 +59,15 @@ with open(f"output/all_projects_gavel.csv", "w") as out_file:
             row = make_project_csv_row(project)
             writer.writerow(row)
 
+# Output table numbers
+with open(f"output/table_numbers.csv", "w") as out_file:
+        writer = csv.writer(out_file)
+        for project in projects:
+            row = [project["Project Title"], project["__table_number"]]
+            writer.writerow(row)
+
 
 print("Output stuff in \"output\" folder")
+print("Make sure to tell hackers their table numbers (and make the spreadsheet look nicer!)")
 print("All done!")
 
