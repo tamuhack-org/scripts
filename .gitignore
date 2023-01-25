@@ -1,3 +1,5 @@
 .DS_Store
 venv/
 find_bad_words/output.txt
+public_*.json
+output.csv
