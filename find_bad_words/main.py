@@ -1,7 +1,7 @@
 import json
 from better_profanity import profanity
 
-INPUT_FILENAME = "public_application_application_export_2023-01-11_185402.json"
+INPUT_FILENAME = "application2.json"
 OUTPUT_FILENAME = "output.txt"
 
 applications = []
