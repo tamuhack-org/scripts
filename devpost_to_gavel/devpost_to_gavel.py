@@ -8,11 +8,11 @@
 # 2) Create a text file inside the data folder containing each Devpost track name separated by line breaks
 #    You can usually copy-paste this from Devpost
 #    Put its filename here
-TRACKS_FILENAME = "tracks-tamuhack-2023.txt"
+TRACKS_FILENAME = "tracks-howdyhack-2023.txt"
 HARDWARE_TRACK_NAME = "Hardware Challenge: Best Hardware Hack"  # So hardware hacks are excluded from best overall
 # 3) Download the projects CSV from devpost
 #    Put its filename here
-PROJECTS_FILENAME = "projects-tamuhack-2023.csv"
+PROJECTS_FILENAME = "projects-howdyhack-2023.csv"
 # 4) Create an empty folder called "output" in the directory of this script 
 # 5) Run the script!
 

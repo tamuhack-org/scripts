@@ -7,10 +7,15 @@ import re
 
 print("-- TAMUhack Team Identifier Script --")
 
+DEVPOST_PROJECTS_CSV_FILENAME = "projects-howdyhack-2023.csv"
+
 def sanitize_and_load_json (file_name):
     """Reads a JSON file, fixes unpleasant formatting, and returns a JSON object"""
     with open(file_name, encoding="utf-8") as file:
         contents = file.read()
+
+        # FIXME this gets confused by double backslash in the JSON export
+        # TODO this whole script is crap. rewrite using CSV DictWriter LOL
 
         # For some reason, when you export the database data as JSON,
         # escape sequences are exported fine "\n" but backslashes are not escaped "\".
@@ -44,39 +49,53 @@ for user_id in applications:
 # Read in devpost submission data
 print("Parsing devpost CSV...")
 submissions = []
-with open("devpost.csv", encoding="utf-8") as file:
-    reader = csv.reader(file)
+with open(DEVPOST_PROJECTS_CSV_FILENAME, encoding="utf-8") as file:
+    with open(DEVPOST_PROJECTS_CSV_FILENAME, encoding="utf-8") as file2:
+        reader = csv.DictReader(file)
+        row_reader = csv.reader(file2)
 
-    for row in reader:
-        # Skip the title row and skip teams without a submission
-        if row[1] == "Submission Url" or row[1] == "":
-            continue
+        # ignore header row
+        for this_row_list in row_reader:
+            break
 
-        submission = {
-            "title": row[0],
-            "url": row[1],
-            "categories": row[9].split(", "),
-            "members": [
-                {
-                    "firstName": row[11],
-                    "lastName": row[12],
-                    "email": row[13],
-                    "foundStatus": "",
-                    "checkedinStatus": ""
-                }
-            ]
-        }
+        for row in reader:
+            
+            # HACK this sucks
+            row_list = []
+            for this_row_list in row_reader:
+                row_list = this_row_list
+                break
+                
+            # Skip the title row and skip teams without a submission
+            if row["Submission Url"] == "":
+                continue
 
-        for i in range(18, 18 + (3 * int(row[17])), 3):
-            submission["members"].append({
-                    "firstName": row[i],
-                    "lastName": row[i + 1],
-                    "email": row[i + 2],
-                    "foundStatus": "",
-                    "checkedinStatus": ""
-                })
+            submission = {
+                "title": row["Project Title"],
+                "url": row["Submission Url"],
+                "categories": row["Opt-In Prizes"].split(", "),
+                "members": [
+                    {
+                        "firstName": row["Submitter First Name"],
+                        "lastName": row["Submitter Last Name"],
+                        "email": row["Submitter Email"],
+                        "foundStatus": "",
+                        "checkedinStatus": ""
+                    }
+                ]
+            }
 
-        submissions.append(submission)
+            for i in range(19, 19 + (3 * int(row["Additional Team Member Count"])), 3):
+                # print(row_list[19])
+                submission["members"].append({
+                        "firstName": row_list[i],
+                        "lastName": row_list[i + 1],
+                        "email": row_list[i + 2],
+                        "foundStatus": "",
+                        "checkedinStatus": ""
+                    })
+
+            submissions.append(submission)
 
 
 # See if team members appear in application data
@@ -146,3 +165,7 @@ for member in members_not_found:
 print("\n\n\nThe following team members never checked in at the event!")
 for member in members_not_checked_in:
     print(f"{member['firstName']} {member['lastName']} - {member['email']}")
+
+print("\n\n")
+print(members_not_found[0])
+print(members_not_found[1])
