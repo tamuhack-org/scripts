@@ -85,6 +85,7 @@ with open(DEVPOST_PROJECTS_CSV_FILENAME, encoding="utf-8") as file:
                 ]
             }
 
+            # TODO this is the source of some weirdness: i need to find the column number of the additional team members
             for i in range(19, 19 + (3 * int(row["Additional Team Member Count"])), 3):
                 # print(row_list[19])
                 submission["members"].append({
@@ -166,6 +167,3 @@ print("\n\n\nThe following team members never checked in at the event!")
 for member in members_not_checked_in:
     print(f"{member['firstName']} {member['lastName']} - {member['email']}")
 
-print("\n\n")
-print(members_not_found[0])
-print(members_not_found[1])
