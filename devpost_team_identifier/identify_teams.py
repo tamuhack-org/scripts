@@ -66,8 +66,10 @@ with open(DEVPOST_PROJECTS_CSV_FILENAME, encoding="utf-8") as file:
                 row_list = this_row_list
                 break
                 
-            # Skip the title row and skip teams without a submission
+            # skip teams without a submission
             if row["Submission Url"] == "":
+                continue
+            if row["Project Status"] == "Draft" or "(Hidden)" in row["Project Status"]:
                 continue
 
             submission = {
