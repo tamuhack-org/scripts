@@ -58,7 +58,7 @@ print("number of projects:", len(projects))
 print("number of drafts:", num_drafts, "\n")
 
 
-# Identify projects that are software or hardware
+# Identify projects as software or hardware
 for project in projects:
     project_tracks = project["Opt-In Prizes"].strip().split(", ")
     project["__is_software_project"] = False
@@ -121,21 +121,24 @@ with open(overall_software_output_filename, "w") as software_out_file:
 
 
 # Output table numbers
-table_numbers_output_filename = "output/table_numbers.csv"
-print(table_numbers_output_filename)
-with open(table_numbers_output_filename, "w") as out_file:
-        writer = csv.writer(out_file)
+table_numbers_software_output_filename = "output/table_numbers_software.csv"
+table_numbers_hardware_output_filename = "output/table_numbers_hardware.csv"
+print(table_numbers_software_output_filename)
+print(table_numbers_hardware_output_filename, "\n")
+with open(table_numbers_software_output_filename, "w") as software_out_file:
+    with open(table_numbers_hardware_output_filename, "w") as hardware_out_file:
+        software_writer = csv.writer(software_out_file)
+        hardware_writer = csv.writer(hardware_out_file)
         for project in projects:
-            if project["__is_software_project"]:
+            if project["__table_number"].startswith("S"):
                 row = [project["Project Title"], project["__table_number"]]
-                writer.writerow(row)
-        for project in projects:
-            if project["__is_hardware_project"]:
+                software_writer.writerow(row)
+            else:
                 row = [project["Project Title"], project["__table_number"]]
-                writer.writerow(row)
+                hardware_writer.writerow(row)
 
 
-print("\nEverything should be in the \"output\" folder")
+print("Everything should be in the \"output\" folder")
 print("Make sure to tell hackers their table numbers (and make the spreadsheet look nicer!)")
 print("All done!")
 
