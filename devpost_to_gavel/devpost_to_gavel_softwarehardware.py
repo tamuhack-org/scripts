@@ -81,15 +81,17 @@ print("")
 
 
 # Assign each project a table number
-software_table_number = 1
-hardware_table_number = 1
+table_number = 1
 for project in projects:
-    if project["__is_software_project"] or (not project["__is_software_project"] and not project["__is_hardware_project"]):
-        project["__table_number"] = f"S{software_table_number}"
-        software_table_number += 1
-    if project["__is_hardware_project"]:
-        project["__table_number"] = f"H{hardware_table_number}"
-        hardware_table_number += 1
+    if project["__is_hardware_project"] and not (not project["__is_software_project"] and not project["__is_hardware_project"]) and not (project["__is_software_project"] and project["__is_hardware_project"]):
+        project["__table_number"] = table_number
+        print(f"Table {table_number}: {project['Project Title']} (hardware)")
+        table_number += 1
+for project in projects:
+    if project["__is_software_project"] or (not project["__is_software_project"] and not project["__is_hardware_project"]) or (project["__is_software_project"] and project["__is_hardware_project"]):
+        project["__table_number"] = table_number
+        print(f"Table {table_number}: {project['Project Title']} (software)")
+        table_number += 1
 
 
 # Write output files for each track
@@ -121,21 +123,13 @@ with open(overall_software_output_filename, "w") as software_out_file:
 
 
 # Output table numbers
-table_numbers_software_output_filename = "output/table_numbers_software.csv"
-table_numbers_hardware_output_filename = "output/table_numbers_hardware.csv"
-print(table_numbers_software_output_filename)
-print(table_numbers_hardware_output_filename, "\n")
-with open(table_numbers_software_output_filename, "w") as software_out_file:
-    with open(table_numbers_hardware_output_filename, "w") as hardware_out_file:
-        software_writer = csv.writer(software_out_file)
-        hardware_writer = csv.writer(hardware_out_file)
-        for project in projects:
-            if project["__table_number"].startswith("S"):
-                row = [project["Project Title"], project["__table_number"]]
-                software_writer.writerow(row)
-            else:
-                row = [project["Project Title"], project["__table_number"]]
-                hardware_writer.writerow(row)
+table_numbers_output_filename = "output/table_numbers.csv"
+print(table_numbers_output_filename)
+with open(table_numbers_output_filename, "w") as out_file:
+    writer = csv.writer(out_file)
+    for project in projects:
+        row = [project["Project Title"], project["__table_number"]]
+        writer.writerow(row)
 
 
 print("Everything should be in the \"output\" folder")
