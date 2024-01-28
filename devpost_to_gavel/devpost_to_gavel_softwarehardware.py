@@ -8,11 +8,12 @@
 # 2) Create a text file inside the data folder containing each Devpost track name separated by line breaks
 #    You can usually copy-paste this from Devpost
 #    Put its filename here
-SOFTWARE_TRACKS_FILENAME = "tracks-software-howdyhack-2023.txt"
-HARDWARE_TRACKS_FILENAME = "tracks-hardware-howdyhack-2023.txt"
+SOFTWARE_TRACKS_FILENAME = "tracks-software.txt"
+HARDWARE_TRACKS_FILENAME = "tracks-hardware.txt"
+GENERAL_TRACKS_FILENAME = "tracks-general.txt"
 # 3) Download the projects CSV from devpost
 #    Put its filename here
-PROJECTS_FILENAME = "projects-howdyhack-2023.csv"
+PROJECTS_FILENAME = "devpost.csv"
 # 4) Create an empty folder called "output" in the directory of this script 
 # 5) Run the script!
 
@@ -42,6 +43,11 @@ with open(f"data/{HARDWARE_TRACKS_FILENAME}") as in_file:
     for line in in_file.readlines():
         track_name = line.strip()
         hardware_tracks.add(track_name)
+        tracks.add(track_name)
+
+with open(f"data/{GENERAL_TRACKS_FILENAME}") as in_file:
+    for line in in_file.readlines():
+        track_name = line.strip()
         tracks.add(track_name)
 
 
@@ -76,7 +82,9 @@ for project in projects:
     if is_software_project and is_hardware_project:
         print(f"WARNING: project {project['Project Title']} is BOTH software and hardware, ask the project members to specify one or the other")
     if not is_software_project and not is_hardware_project:
-        print(f"WARNING: project {project['Project Title']} is NEITHER software nor hardware, ask the project members to specify one or the other")
+        # print(f"WARNING: project {project['Project Title']} is NEITHER software nor hardware, ask the project members to specify one or the other")
+        print(f"..........whatever: project {project['Project Title']} is NEITHER software nor hardware... i'll just lump them in with software")
+        project["__is_software_project"] = True
 print("")
 
 
@@ -87,11 +95,13 @@ for project in projects:
         project["__table_number"] = table_number
         print(f"Table {table_number}: {project['Project Title']} (hardware)")
         table_number += 1
+# print(f"Software tables: 1-{table_number - 1}")
 for project in projects:
     if project["__is_software_project"] or (not project["__is_software_project"] and not project["__is_hardware_project"]) or (project["__is_software_project"] and project["__is_hardware_project"]):
         project["__table_number"] = table_number
         print(f"Table {table_number}: {project['Project Title']} (software)")
         table_number += 1
+# print(f"Hardware tables: {table_number}+")
 
 
 # Write output files for each track
@@ -125,6 +135,8 @@ with open(overall_software_output_filename, "w") as software_out_file:
 # Output table numbers
 table_numbers_output_filename = "output/table_numbers.csv"
 print(table_numbers_output_filename)
+# sort projects by table number
+projects.sort(key=lambda project: project["__table_number"])
 with open(table_numbers_output_filename, "w") as out_file:
     writer = csv.writer(out_file)
     for project in projects:
