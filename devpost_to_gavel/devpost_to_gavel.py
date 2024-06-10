@@ -1,6 +1,6 @@
 # Made by Naveen Iyer
-# 30 September 2022
-# For HowdyHack 2022
+# 9 June 2024
+
 
 # HOW TO USE
 # ----------
@@ -9,9 +9,9 @@
 #    You can usually copy-paste this from Devpost
 #    Put its filename here
 TRACKS_FILENAME = "tracks-howdyhack-2023.txt"
-HARDWARE_TRACK_NAME = "Hardware Challenge: Best Hardware Hack"  # So hardware hacks are excluded from best overall
 # 3) Download the projects CSV from devpost
-#    Put its filename here
+#    IMPORTANT: Run it through the "devpost_judging_attendance" script first to filter out projects that won't be judged
+#    Then copy the output CSV to the "data" folder and put its filename here
 PROJECTS_FILENAME = "projects-howdyhack-2023.csv"
 # 4) Create an empty folder called "output" in the directory of this script 
 # 5) Run the script!
@@ -21,7 +21,9 @@ PROJECTS_FILENAME = "projects-howdyhack-2023.csv"
 import csv
 
 
-def make_project_csv_row (project):
+def make_project_csv_row (project, include_tracks=False):
+    if include_tracks:
+        return [project["Project Title"], f"Table {project['__table_number']}", f"{project["Submission Url"]}\nTracks: {project["Opt-In Prizes"]}"]
     return [project["Project Title"], f"Table {project['__table_number']}", project["Submission Url"]]
 
 def sanitize_filename (filename):
@@ -60,16 +62,10 @@ for track_name in tracks:
                 row = make_project_csv_row(project)
                 writer.writerow(row)
 
-with open(f"output/best_overall_minus_hardware_gavel.csv", "w") as out_file:
+with open(f"output/best_overall_gavel.csv", "w") as out_file:
         writer = csv.writer(out_file)
         for project in projects:
-            project_tracks = project["Opt-In Prizes"].strip().split(", ")
-            if HARDWARE_TRACK_NAME in project_tracks:
-                # print(project["Opt-In Prizes"])
-                # print(project_tracks)
-                # print("Hardware hack:", project["Project Title"])
-                continue
-            row = make_project_csv_row(project)
+            row = make_project_csv_row(project, include_tracks=True)
             writer.writerow(row)
 
 # Output table numbers

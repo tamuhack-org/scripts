@@ -1,6 +1,9 @@
 # Team Identifier Script (for TAMUhack 2024 and beyond)
 # Naveen Iyer
 
+# ------ This script is for THX-style hackathons where IEEE manages the hardware tracks ------
+
+
 import json
 import csv
 import re

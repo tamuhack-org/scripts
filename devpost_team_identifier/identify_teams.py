@@ -7,7 +7,9 @@ import re
 
 print("-- TAMUhack Team Identifier Script --")
 
-DEVPOST_PROJECTS_CSV_FILENAME = "projects-howdyhack-2023.csv"
+DEVPOST_PROJECTS_CSV_FILENAME = "projects-howdyhack-2023.csv"  # Exported from devpost
+OBOS_APPLICATION_APPLICATION_JSON_FILENAME = "obos_application_application.json"  # Exported from Obos's application_application table via some database viewer
+OBOS_USER_USER_JSON_FILENAME = "obos_user_user.json"  # Exported from Obos's user_user table via some database viewer
 
 def sanitize_and_load_json (file_name):
     """Reads a JSON file, fixes unpleasant formatting, and returns a JSON object"""
@@ -31,12 +33,12 @@ def sanitize_and_load_json (file_name):
 # Read in application and user data
 print("Parsing application JSON...")
 applications = {}
-for application in sanitize_and_load_json("obos_application_application.json"):
+for application in sanitize_and_load_json(OBOS_APPLICATION_APPLICATION_JSON_FILENAME):
     applications[application["user_id"]] = application
 
 print("Parsing user JSON...")
 users = {}
-for user in sanitize_and_load_json("obos_user_user.json"):
+for user in sanitize_and_load_json(OBOS_USER_USER_JSON_FILENAME):
     users[user["id"]] = user
 
 for user_id in applications:
