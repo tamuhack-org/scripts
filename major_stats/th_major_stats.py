@@ -4,7 +4,7 @@
 
 import csv
 
-INPUT_CSV_FILENAME = "th23.csv"
+INPUT_CSV_FILENAME = "th24_apps.csv"
 NUM_MAJORS_TO_PRINT = 100
 ONLY_CHECKED_IN = True
 
